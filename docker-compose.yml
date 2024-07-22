@@ -1,0 +1,46 @@
+version: '3'
+services:
+  nginx:
+    build: .
+    ports:
+      - "8082:80"
+    volumes:
+      - ./html/:/usr/share/nginx/html:ro
+  postgres:
+    image: postgres:latest
+    container_name: my_postgres_container
+    environment:
+      POSTGRES_USER: RAMADI
+      POSTGRES_PASSWORD: Sophistic@lY@s01
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    networks:
+      pg-network:
+        ipv4_address: 172.25.0.5
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: my_pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: moncef.ramadii@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: Sophistic@lY@s01
+    ports:
+      - "8085:80"
+    volumes:
+      - pgcnx:/var/lib/pgadmin/
+    networks:
+      pg-network:
+        ipv4_address: 172.25.0.6
+volumes:
+  pgdata:
+    external: true
+  pgcnx:
+    external: true
+networks:
+  pg-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16  
